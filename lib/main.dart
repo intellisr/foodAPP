@@ -9,6 +9,9 @@ import 'screens/meal_planner_screen.dart'; // Import your meal planner screen
 import 'screens/bmi_calculator_screen.dart'; // Import your BMI calculator screen
 import 'screens/cookbook_screen.dart'; // Import your BMI calculator screen
 import 'screens/store_finder_screen.dart'; // Import your store finder screen
+import 'screens/signup_screen.dart';
+import 'screens/add_recipe_screen.dart';
+import 'screens/recipe_detail_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +35,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/', // Set the initial route
       routes: {
         '/': (context) => LoginScreen(), // Set the login screen as the home
+        '/signup': (context) => SignupScreen(), // Set the login screen as the home
         '/home': (context) => HomeScreen(), // Define the home screen route
         '/recipe_search': (context) =>  RecipeSearchScreen(), // Define recipe search route
         '/favorites': (context) =>  FavoritesScreen(), // Define favorites route
@@ -39,6 +43,8 @@ class MyApp extends StatelessWidget {
         '/bmi_calculator': (context) =>  BMICalculatorScreen(), // Define BMI calculator route
         '/cookbook': (context) =>  CookBookScreen(), // Define cookbook route
         '/store_finder': (context) => StoreFinderScreen(), // Define store finder route
+        '/add_recipe': (context) => AddRecipeScreen(), // Define store finder route
+        '/recipe_details': (context) => RecipeDetailScreen(), // Define store finder route
       },
     );
   }

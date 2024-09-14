@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -6,47 +7,103 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: Center(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout,semanticLabel:"Sign out"),
+            onPressed: () async {
+              // await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacementNamed(context, '/');
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Welcome to Recipe Hub!'),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/recipe_search');
-              },
-              child: const Text('Search Recipes'),
+            // Logo Banner
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(10),
+              color: Colors.green,
+              child: Column(
+                children: [
+                  Image.network('https://i.ibb.co/2txqMcF/logo.png',width: 70), // Add your logo here
+                  SizedBox(height: 5),
+                  Text(
+                    'Good Chef',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/favorites');
-              },
-              child: const Text('Favorites'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/meal_planner');
-              },
-              child: const Text('Meal Planner'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/bmi_calculator');
-              },
-              child: const Text('BMI Calculator'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/cookbook');
-              },
-              child: const Text('Cookbook'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/store_finder');
-              },
-              child: const Text('Store Finder'),
+
+            // Welcome Text
+            // Padding(
+            //   padding: const EdgeInsets.all(16.0),
+            //   child: Text(
+            //     'Welcome to Recipe Hub!',
+            //     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            //   ),
+            // ),
+
+            // Dashboard Buttons
+            GridView.count(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              childAspectRatio: 1.5,
+              padding: EdgeInsets.all(16.0),
+              children: [
+                _buildDashboardButton(
+                  context,
+                  'Search Recipes',
+                  Icons.search,
+                  '/recipe_search',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'Add Recipes',
+                  Icons.add,
+                  '/add_recipe',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'Recipe Details',
+                  Icons.food_bank,
+                  '/recipe_details',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'Favorites',
+                  Icons.favorite,
+                  '/favorites',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'Meal Planner',
+                  Icons.calendar_today,
+                  '/meal_planner',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'BMI Calculator',
+                  Icons.fitness_center,
+                  '/bmi_calculator',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'Store Finder',
+                  Icons.store,
+                  '/store_finder',
+                ),
+              ],
             ),
             
           ],
@@ -54,5 +111,47 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
 
+  Widget _buildDashboardButton(
+      BuildContext context, String title, IconData icon, String route) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.all(4.0),
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, route);
+        },
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange, Colors.red],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 40,
+                color: Colors.white,
+              ),
+              SizedBox(height: 10),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
