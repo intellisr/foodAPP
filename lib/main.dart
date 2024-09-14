@@ -7,6 +7,7 @@ import 'screens/recipe_search_screen.dart'; // Import your recipe search screen
 import 'screens/favorites_screen.dart'; // Import your favorites screen
 import 'screens/meal_planner_screen.dart'; // Import your meal planner screen
 import 'screens/bmi_calculator_screen.dart'; // Import your BMI calculator screen
+import 'screens/cookbook_screen.dart'; // Import your BMI calculator screen
 import 'screens/store_finder_screen.dart'; // Import your store finder screen
 
 void main() async {
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/favorites': (context) =>  FavoritesScreen(), // Define favorites route
         '/meal_planner': (context) =>  MealPlannerScreen(), // Define meal planner route
         '/bmi_calculator': (context) =>  BMICalculatorScreen(), // Define BMI calculator route
+        '/cookbook': (context) =>  CookBookScreen(), // Define cookbook route
         '/store_finder': (context) => StoreFinderScreen(), // Define store finder route
       },
     );

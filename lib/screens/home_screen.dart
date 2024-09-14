@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Welcome to Recipe Hub22222!'),
+            const Text('Welcome to Recipe Hub!'),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/recipe_search');
@@ -38,10 +38,17 @@ class HomeScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
+                Navigator.pushNamed(context, '/cookbook');
+              },
+              child: const Text('Cookbook'),
+            ),
+            ElevatedButton(
+              onPressed: () {
                 Navigator.pushNamed(context, '/store_finder');
               },
               child: const Text('Store Finder'),
             ),
+            
           ],
         ),
       ),
