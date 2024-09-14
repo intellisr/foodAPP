@@ -81,6 +81,12 @@ class HomeScreen extends StatelessWidget {
                 ),
                 _buildDashboardButton(
                   context,
+                  'Cookbook',
+                  Icons.book,
+                  '/cookbook',
+                ),
+                _buildDashboardButton(
+                  context,
                   'Favorites',
                   Icons.favorite,
                   '/favorites',
