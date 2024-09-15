@@ -47,6 +47,7 @@ dependencies:
   flutter_rating_stars: ^1.1.0
   geolocator: ^9.0.2
   cached_network_image: ^3.2.0
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
