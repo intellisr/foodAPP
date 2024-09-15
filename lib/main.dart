@@ -11,6 +11,8 @@ import 'screens/store_finder_screen.dart'; // Import your store finder screen
 import 'screens/signup_screen.dart';
 import 'screens/add_recipe_screen.dart';
 import 'screens/recipe_detail_screen.dart';
+import 'screens/personalised_goals_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/store_finder': (context) => StoreFinderScreen(), // Define store finder route
         '/add_recipe': (context) => AddRecipeScreen(), // Define store finder route
         '/recipe_details': (context) => RecipeDetailScreen(documentId:'temp'), // Define store finder route
+        '/personalised_goals': (context) => PersonalGoalScreen(), // Define store finder route
       },
     );
   }
