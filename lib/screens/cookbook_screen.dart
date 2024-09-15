@@ -19,7 +19,10 @@ class CookBookScreen extends StatelessWidget {
             children: [
               // Section 1: Favorites with background color
               Container(
-                color: Colors.greenAccent.withOpacity(0.2), // Light background color for better UX
+                decoration: BoxDecoration(
+                  color: Colors.greenAccent.withOpacity(0.2), // Background color for this section
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 padding: const EdgeInsets.all(5.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,33 +1,21 @@
-// import 'package:flutter/material.dart';
-
-// class MealPlannerScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Meal Planner')),
-//       body: Center(child: Text('Plan your meals here.')),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class MealPlannerScreen extends StatefulWidget {
+class PersonalGoalScreen extends StatefulWidget {
   @override
-  _MealPlannerScreenState createState() => _MealPlannerScreenState();
+  _PersonalGoalScreenState createState() => _PersonalGoalScreenState();
 }
 
-class _MealPlannerScreenState extends State<MealPlannerScreen> {
-  final TextEditingController _mealController = TextEditingController();
+class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
+  final TextEditingController _goalController = TextEditingController();
   DateTime? _selectedDate;
-  String? _selectedMealType;
-  final List<Map<String, dynamic>> _mealPlans = [];
+  String? _selectedGoalType;
+  final List<Map<String, dynamic>> _goalPlans = [];
 
-  final List<String> _mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
+  final List<String> _goalTypes = ['Weight loss', 'Mucscle Gain', 'General'];
 
-  void _submitMealPlan() {
-    if (_selectedDate == null || _selectedMealType == null || _mealController.text.isEmpty) {
+  void _submitGoalPlan() {
+    if (_selectedDate == null || _selectedGoalType == null || _goalController.text.isEmpty) {
       // Add validation here
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill in all fields')),
@@ -35,43 +23,43 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       return;
     }
 
-    // Validation: Prevent duplicate meal types for the same date
-    bool mealExists = _mealPlans.any((meal) =>
-        meal['date'] == _selectedDate && meal['mealType'] == _selectedMealType);
+    // Validation: Prevent duplicate goal types for the same date
+    bool goalExists = _goalPlans.any((goal) =>
+        goal['date'] == _selectedDate && goal['goalType'] == _selectedGoalType);
 
-    if (mealExists) {
+    if (goalExists) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('This meal type already exists for the selected date')),
+        SnackBar(content: Text('This goal type already exists for the selected date')),
       );
       return;
     }
 
     setState(() {
-      _mealPlans.add({
+      _goalPlans.add({
         'date': _selectedDate!,
-        'mealType': _selectedMealType!,
-        'mealPlan': _mealController.text,
+        'goalType': _selectedGoalType!,
+        'goalPlan': _goalController.text,
       });
-      _mealPlans.sort((a, b) {
-        // Sort by date and then by meal type (Breakfast, Lunch, Dinner)
+      _goalPlans.sort((a, b) {
+        // Sort by date and then by goal type (Weight loss, Mucscle Gain, General)
         int dateComparison = a['date'].compareTo(b['date']);
         if (dateComparison != 0) return dateComparison;
 
-        return _mealTypes.indexOf(a['mealType']).compareTo(_mealTypes.indexOf(b['mealType']));
+        return _goalTypes.indexOf(a['goalType']).compareTo(_goalTypes.indexOf(b['goalType']));
       });
     });
 
-    _mealController.clear();
+    _goalController.clear();
     _selectedDate = null;
-    _selectedMealType = null;
+    _selectedGoalType = null;
   }
 
-  void _deleteMealPlan(int index) {
+  void _deleteGoalPlan(int index) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Meal Plan'),
-        content: Text('Are you sure you want to delete this meal plan?'),
+        title: Text('Delete Goal Plan'),
+        content: Text('Are you sure you want to delete this goal plan?'),
         actions: [
           TextButton(
             onPressed: () {
@@ -82,7 +70,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
           TextButton(
             onPressed: () {
               setState(() {
-                _mealPlans.removeAt(index);
+                _goalPlans.removeAt(index);
               });
               Navigator.pop(context);
             },
@@ -107,13 +95,13 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
   }
 
-  Color _getMealTypeColor(String mealType) {
-    switch (mealType) {
-      case 'Breakfast':
-        return Colors.orange[200]!;
-      case 'Lunch':
-        return Colors.green[200]!;
-      case 'Dinner':
+  Color _getGoalTypeColor(String goalType) {
+    switch (goalType) {
+      case 'Weight loss':
+        return const Color.fromARGB(255, 175, 255, 128)!;
+      case 'Mucscle Gain':
+        return const Color.fromARGB(255, 245, 184, 184)!;
+      case 'General':
         return Colors.blue[200]!;
       default:
         return Colors.grey;
@@ -124,7 +112,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Meal Planner'),
+        title: Text('Nutrition Goals'),
         backgroundColor: Colors.greenAccent,
       ),
       body: Padding(
@@ -132,9 +120,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Section 1: Add a new meal plan
+            // Section 1: Add a new goal plan
             Text(
-              'Add a new meal plan',
+              'Add a new goal',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
@@ -153,61 +141,61 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             SizedBox(height: 16),
             DropdownButton<String>(
               isExpanded: true,
-              value: _selectedMealType,
-              hint: Text('Select Meal Type'),
-              items: _mealTypes.map((String mealType) {
+              value: _selectedGoalType,
+              hint: Text('Select Goal Type'),
+              items: _goalTypes.map((String goalType) {
                 return DropdownMenuItem<String>(
-                  value: mealType,
-                  child: Text(mealType),
+                  value: goalType,
+                  child: Text(goalType),
                 );
               }).toList(),
               onChanged: (newValue) {
                 setState(() {
-                  _selectedMealType = newValue;
+                  _selectedGoalType = newValue;
                 });
               },
             ),
             SizedBox(height: 16),
             TextField(
-              controller: _mealController,
+              controller: _goalController,
               decoration: InputDecoration(
-                labelText: 'Enter your meal plan',
+                labelText: 'Enter your goal plan',
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _submitMealPlan,
+              onPressed: _submitGoalPlan,
               child: Text('Submit'),
             ),
             SizedBox(height: 24),
 
-            // Section 2: List of meal plans
+            // Section 2: List of goal plans
             Text(
-              'Your Meal Plans',
+              'Your Goals',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
             Expanded(
-              child: _mealPlans.isEmpty
-                  ? Text('No meal plans yet.')
+              child: _goalPlans.isEmpty
+                  ? Text('No goals yet.')
                   : ListView.builder(
-                      itemCount: _mealPlans.length,
+                      itemCount: _goalPlans.length,
                       itemBuilder: (context, index) {
-                        final mealPlan = _mealPlans[index];
+                        final goalPlan = _goalPlans[index];
                         return GestureDetector(
                           onTap: () {
-                            // Show detailed view of the meal plan in a card
+                            // Show detailed view of the goal plan in a card
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: Text(
-                                    '${DateFormat('yyyy-MM-dd').format(mealPlan['date'])} (${mealPlan['mealType']})'),
+                                    '${DateFormat('yyyy-MM-dd').format(goalPlan['date'])} (${goalPlan['goalType']})'),
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text('Meal: ${mealPlan['mealPlan']}'),
+                                    Text('Goal: ${goalPlan['goalPlan']}'),
                                   ],
                                 ),
                                 actions: [
@@ -219,7 +207,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      _deleteMealPlan(index);
+                                      _deleteGoalPlan(index);
                                       Navigator.pop(context);
                                     },
                                     child: Text('Delete'),
@@ -229,15 +217,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                             );
                           },
                           child: Card(
-                            color: _getMealTypeColor(mealPlan['mealType']),
+                            color: _getGoalTypeColor(goalPlan['goalType']),
                             margin: EdgeInsets.symmetric(vertical: 8),
                             child: ListTile(
                               title: Text(
-                                  '${DateFormat('yyyy-MM-dd').format(mealPlan['date'])} (${mealPlan['mealType']})'),
+                                  '${DateFormat('yyyy-MM-dd').format(goalPlan['date'])} (${goalPlan['goalType']})'),
                               trailing: IconButton(
                                 icon: Icon(Icons.delete),
                                 onPressed: () {
-                                  _deleteMealPlan(index);
+                                  _deleteGoalPlan(index);
                                 },
                               ),
                             ),

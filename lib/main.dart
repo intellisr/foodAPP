@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'screens/login_screen.dart'; // Import your login screen
-import 'screens/home_screen.dart'; // Import your home screen
-import 'screens/recipe_search_screen.dart'; // Import your recipe search screen
-import 'screens/favorites_screen.dart'; // Import your favorites screen
-import 'screens/meal_planner_screen.dart'; // Import your meal planner screen
-import 'screens/bmi_calculator_screen.dart'; // Import your BMI calculator screen
-import 'screens/cookbook_screen.dart'; // Import your BMI calculator screen
-import 'screens/store_finder_screen.dart'; // Import your store finder screen
+import 'screens/login_screen.dart'; // Import login screen
+import 'screens/home_screen.dart'; // Import home screen
+import 'screens/recipe_search_screen.dart'; // Import recipe search screen
+import 'screens/favorites_screen.dart'; // Import favorites screen
+import 'screens/meal_planner_screen.dart'; // Import meal planner screen
+import 'screens/bmi_calculator_screen.dart'; // Import BMI calculator screen
+import 'screens/cookbook_screen.dart'; // Import BMI calculator screen
+import 'screens/store_finder_screen.dart'; // Import store finder screen
 import 'screens/signup_screen.dart';
 import 'screens/add_recipe_screen.dart';
 import 'screens/recipe_detail_screen.dart';
+import 'screens/personalised_goals_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/store_finder': (context) => StoreFinderScreen(), // Define store finder route
         '/add_recipe': (context) => AddRecipeScreen(), // Define store finder route
         '/recipe_details': (context) => RecipeDetailScreen(), // Define store finder route
+        '/personalised_goals': (context) => PersonalGoalScreen(), // Define store finder route
       },
     );
   }
