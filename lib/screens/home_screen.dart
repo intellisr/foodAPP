@@ -6,16 +6,39 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.green,
         actions: [
+          // User email display
+          if (user != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Center(
+                child: Text(
+                  user.email ?? 'No Email',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          // Sign-out button
           IconButton(
-            icon: Icon(Icons.logout,semanticLabel:"Sign out"),
+            icon: Icon(Icons.logout, semanticLabel: "Sign out"),
             onPressed: () async {
-              // await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacementNamed(context, '/');
+              try {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacementNamed(context, '/');
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to sign out: $e')),
+                );
+              }
             },
           ),
         ],
@@ -30,7 +53,8 @@ class HomeScreen extends StatelessWidget {
               color: Colors.green,
               child: Column(
                 children: [
-                  Image.network('https://i.ibb.co/2txqMcF/logo.png',width: 70), // Add your logo here
+                  Image.network('https://i.ibb.co/2txqMcF/logo.png',
+                      width: 70), // Add your logo here
                   SizedBox(height: 5),
                   Text(
                     'Good Chef',
@@ -75,21 +99,9 @@ class HomeScreen extends StatelessWidget {
                 ),
                 _buildDashboardButton(
                   context,
-                  'Recipe Details',
-                  Icons.food_bank,
-                  '/recipe_details',
-                ),
-                _buildDashboardButton(
-                  context,
                   'Cookbook',
                   Icons.book,
                   '/cookbook',
-                ),
-                _buildDashboardButton(
-                  context,
-                  'Favorites',
-                  Icons.favorite,
-                  '/favorites',
                 ),
                 _buildDashboardButton(
                   context,
@@ -117,7 +129,6 @@ class HomeScreen extends StatelessWidget {
                 // ),
               ],
             ),
-            
           ],
         ),
       ),
