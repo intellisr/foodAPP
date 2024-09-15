@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddRecipeScreen extends StatefulWidget {
   @override
@@ -7,6 +8,7 @@ class AddRecipeScreen extends StatefulWidget {
 }
 
 class _AddRecipeScreenState extends State<AddRecipeScreen> {
+  final User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController mealNameController = TextEditingController();
   final TextEditingController readyInTimeController = TextEditingController();
   final TextEditingController ingredientController = TextEditingController();
@@ -44,6 +46,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         recipeDescriptionController.text.isNotEmpty) {
       try {
         await FirebaseFirestore.instance.collection('recipes').add({
+          'user':user?.email,
           'mealName': mealNameController.text,
           'mealTime': selectedMealTime,
           'ingredients': ingredients,
@@ -54,6 +57,9 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
           'culinaryTrends': culinaryTrendsController.text,
           'recipeCulture': recipeCultureController.text,
           'recipeDescription': recipeDescriptionController.text,
+          'share':false,
+          'rating':0,
+          'rating_count':0
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recipe added successfully!')));
         setState(() {});

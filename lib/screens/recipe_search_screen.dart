@@ -1,37 +1,59 @@
-// import 'package:flutter/material.dart';
-
-// class RecipeSearchScreen extends StatelessWidget {
-//   final TextEditingController searchController = TextEditingController();
-
-//   void searchRecipes() {
-//     // Implement search functionality
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Search Recipes')),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             TextField(controller: searchController, decoration: InputDecoration(labelText: 'Search by ingredient')),
-//             ElevatedButton(onPressed: searchRecipes, child: Text('Search')),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:recipe_hub/screens/recipe_detail_screen.dart';
 
-class RecipeSearchScreen extends StatelessWidget {
+class RecipeSearchScreen extends StatefulWidget {
+  @override
+  _RecipeSearchScreenState createState() => _RecipeSearchScreenState();
+}
+
+class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
   final TextEditingController searchController = TextEditingController();
-  final List<double> ratings = [5.0, 4.3, 4.0, 1.0]; // Initial ratings for the 4 cards
+  List<DocumentSnapshot> recipes = []; // To store retrieved recipes
+  final List<double> ratings = []; // Initial ratings (mocked)
 
-  void searchRecipes() {
-    // Implement search functionality
+  // Function to search for recipes by name and ingredients
+  Future<void> searchRecipes() async {
+    String query = searchController.text.trim().toLowerCase();
+
+    if (query.isEmpty) {
+      return; // Do nothing if search is empty
+    }
+
+    // Get Firestore instance
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Search by meal name
+    QuerySnapshot nameQuerySnapshot = await firestore
+        .collection('recipes')
+        .where('share', isEqualTo: true) // Only fetch shared recipes
+        .where('mealName', isGreaterThanOrEqualTo: query)
+        .where('mealName', isLessThanOrEqualTo: query + '\uf8ff')
+        .get();
+
+    // Search for recipes where ingredients contain the query as a substring (case insensitive)
+    QuerySnapshot ingredientsQuerySnapshot = await firestore
+        .collection('recipes')
+        .where('share', isEqualTo: true)
+        .get(); // Get all shared recipes
+
+    // Filter manually in code based on lookalike ingredients
+    List<DocumentSnapshot> matchedRecipes =
+        ingredientsQuerySnapshot.docs.where((doc) {
+      List<String> ingredients = List<String>.from(doc['ingredients']);
+      return ingredients
+          .any((ingredient) => ingredient.toLowerCase().contains(query));
+    }).toList();
+
+    // Combine results (removing duplicates)
+    List<DocumentSnapshot> allResults = [
+      ...nameQuerySnapshot.docs,
+      ...matchedRecipes,
+    ].toSet().toList(); // Using Set to remove duplicates
+
+    setState(() {
+      recipes = allResults; // Update the list of recipes
+    });
   }
 
   @override
@@ -49,7 +71,7 @@ class RecipeSearchScreen extends StatelessWidget {
             TextField(
               controller: searchController,
               decoration: InputDecoration(
-                labelText: 'Search by ingredient',
+                labelText: 'Search by name or ingredient',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -71,76 +93,89 @@ class RecipeSearchScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            // Section with cards
+            // Displaying recipe cards
             Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 cards per row
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 3 / 4,
-                ),
-                itemCount: 4, // Displaying 4 cards
-                itemBuilder: (context, index) {
-                  double rating = ratings[index];
-
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Row 1: A single variable
-                          Text('Variable 1: Value', style: TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 8),
-                          // Row 2: Two variables in columns
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Var 2A: Value'),
-                              Text('Var 2B: Value'),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          // Row 3: Two more variables in columns
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Var 3A: Value'),
-                              Text('Var 3B: Value'),
-                            ],
-                          ),
-                          Spacer(),
-                          // Rating bar with 5 stars
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(5, (starIndex) {
-                              return Icon(
-                                starIndex < rating.floor() 
-                                    ? Icons.star 
-                                    : (starIndex < rating ? Icons.star_half : Icons.star_border),
-                                color: starIndex < rating ? Colors.amber : Colors.grey,
-                              );
-                            }),
-                          ),
-                          const SizedBox(height: 4),
-                          // Display rating value below stars
-                          Center(
-                            child: Text(
-                              'Rating: $rating',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                          ),
-                        ],
+              child: recipes.isEmpty
+                  ? Center(child: Text('No recipes found.'))
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 3 / 4,
                       ),
+                      itemCount: recipes.length,
+                      itemBuilder: (context, index) {
+                        var recipeData =
+                            recipes[index].data() as Map<String, dynamic>;
+                        double rating = recipeData['rating'] ?? 0.0;
+
+                        return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RecipeDetailScreen(
+                                      documentId: recipes[index].id),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 5,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Display meal name
+                                    Text(recipeData['mealName'].toUpperCase(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                        'Meal Time : ${recipeData['mealTime']}'),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                        'Season : ${recipeData['recipeSeason']}'),
+                                    const SizedBox(height: 8),
+                                    Text('Time : ${recipeData['readyInTime']}'),
+                                    Spacer(),
+                                    // Rating bar with 5 stars
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: List.generate(5, (starIndex) {
+                                        return Icon(
+                                          starIndex < rating.floor()
+                                              ? Icons.star
+                                              : (starIndex < rating
+                                                  ? Icons.star_half
+                                                  : Icons.star_border),
+                                          color: starIndex < rating
+                                              ? Colors.amber
+                                              : Colors.grey,
+                                        );
+                                      }),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Center(
+                                      child: Text(
+                                        'Rating: $rating',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ));
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),
@@ -148,4 +183,3 @@ class RecipeSearchScreen extends StatelessWidget {
     );
   }
 }
-

@@ -9,19 +9,27 @@ class LoginScreen extends StatelessWidget {
 
   void login(BuildContext context) async {
     try {
-      // await FirebaseAuth.instance.signInWithEmailAndPassword(
-      //   email: emailController.text,
-      //   password: passwordController.text,
-      // );
-      // Navigate to home screen
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
       Navigator.pushReplacementNamed(context, '/home');
-    } catch (e) {
-      print(e);
-      // Show error message
+
+    }on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No user found for that email.')),
+        );
+      } else if (e.code == 'wrong-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Wrong password provided for that user.')),
+        );
+      } else{
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed. Please try again.')),
+        SnackBar(content: Text(e.toString())),
       );
     }
+  }
   }
 
   @override
