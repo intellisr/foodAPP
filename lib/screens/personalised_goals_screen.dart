@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PersonalGoalScreen extends StatefulWidget {
   @override
@@ -7,23 +9,50 @@ class PersonalGoalScreen extends StatefulWidget {
 }
 
 class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
+  final User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController _goalController = TextEditingController();
   DateTime? _selectedDate;
   String? _selectedGoalType;
   final List<Map<String, dynamic>> _goalPlans = [];
 
-  final List<String> _goalTypes = ['Weight loss', 'Mucscle Gain', 'General'];
+  final List<String> _goalTypes = ['Weight loss', 'Muscle Gain', 'General'];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchGoals(); // Fetch goals from Firestore on init
+  }
+
+  // Fetch goals from Firestore
+  Future<void> _fetchGoals() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('goals').where('user', isEqualTo: user?.email).get();
+    setState(() {
+      _goalPlans.clear();
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        _goalPlans.add({
+          'user':user?.email,
+          'date': (data['date'] as Timestamp).toDate(), // Convert Timestamp to DateTime
+          'goalType': data['goalType'],
+          'goalPlan': data['goalPlan'],
+        });
+      }
+      _goalPlans.sort((a, b) {
+        int dateComparison = a['date'].compareTo(b['date']);
+        if (dateComparison != 0) return dateComparison;
+        return _goalTypes.indexOf(a['goalType']).compareTo(_goalTypes.indexOf(b['goalType']));
+      });
+    });
+  }
 
   void _submitGoalPlan() {
     if (_selectedDate == null || _selectedGoalType == null || _goalController.text.isEmpty) {
-      // Add validation here
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill in all fields')),
       );
       return;
     }
 
-    // Validation: Prevent duplicate goal types for the same date
     bool goalExists = _goalPlans.any((goal) =>
         goal['date'] == _selectedDate && goal['goalType'] == _selectedGoalType);
 
@@ -34,17 +63,21 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
       return;
     }
 
+    // Save to Firestore
+    Map<String, dynamic> newGoalPlan = {
+      'user':user?.email,
+      'date': _selectedDate!,
+      'goalType': _selectedGoalType!,
+      'goalPlan': _goalController.text,
+    };
+
+    FirebaseFirestore.instance.collection('goals').add(newGoalPlan);
+
     setState(() {
-      _goalPlans.add({
-        'date': _selectedDate!,
-        'goalType': _selectedGoalType!,
-        'goalPlan': _goalController.text,
-      });
+      _goalPlans.add(newGoalPlan);
       _goalPlans.sort((a, b) {
-        // Sort by date and then by goal type (Weight loss, Mucscle Gain, General)
         int dateComparison = a['date'].compareTo(b['date']);
         if (dateComparison != 0) return dateComparison;
-
         return _goalTypes.indexOf(a['goalType']).compareTo(_goalTypes.indexOf(b['goalType']));
       });
     });
@@ -68,7 +101,19 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
             child: Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              // Remove from Firestore
+              QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                  .collection('goals')
+                  .where('user', isEqualTo: user?.email)
+                  .where('date', isEqualTo: _goalPlans[index]['date'])
+                  .where('goalType', isEqualTo: _goalPlans[index]['goalType'])
+                  .get();
+
+              for (var doc in querySnapshot.docs) {
+                await FirebaseFirestore.instance.collection('goals').doc(doc.id).delete();
+              }
+
               setState(() {
                 _goalPlans.removeAt(index);
               });
@@ -99,7 +144,7 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
     switch (goalType) {
       case 'Weight loss':
         return const Color.fromARGB(255, 175, 255, 128)!;
-      case 'Mucscle Gain':
+      case 'Muscle Gain':
         return const Color.fromARGB(255, 245, 184, 184)!;
       case 'General':
         return Colors.blue[200]!;
@@ -120,7 +165,6 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Section 1: Add a new goal plan
             Text(
               'Add a new goal',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -170,8 +214,6 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
               child: Text('Submit'),
             ),
             SizedBox(height: 24),
-
-            // Section 2: List of goal plans
             Text(
               'Your Goals',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -186,7 +228,6 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
                         final goalPlan = _goalPlans[index];
                         return GestureDetector(
                           onTap: () {
-                            // Show detailed view of the goal plan in a card
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -240,4 +281,3 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
     );
   }
 }
-

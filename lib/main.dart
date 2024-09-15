@@ -12,6 +12,7 @@ import 'screens/signup_screen.dart';
 import 'screens/add_recipe_screen.dart';
 import 'screens/recipe_detail_screen.dart';
 import 'screens/personalised_goals_screen.dart';
+import 'screens/video_screen.dart';
 
 
 void main() async {
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/add_recipe': (context) => AddRecipeScreen(), // Define store finder route
         '/recipe_details': (context) => RecipeDetailScreen(documentId:'temp'), // Define store finder route
         '/personalised_goals': (context) => PersonalGoalScreen(), // Define store finder route
+        '/class': (context) => VideoScreen(),
       },
     );
   }

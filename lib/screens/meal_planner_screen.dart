@@ -1,17 +1,7 @@
-// import 'package:flutter/material.dart';
-
-// class MealPlannerScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Meal Planner')),
-//       body: Center(child: Text('Plan your meals here.')),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MealPlannerScreen extends StatefulWidget {
   @override
@@ -19,6 +9,7 @@ class MealPlannerScreen extends StatefulWidget {
 }
 
 class _MealPlannerScreenState extends State<MealPlannerScreen> {
+  final User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController _mealController = TextEditingController();
   DateTime? _selectedDate;
   String? _selectedMealType;
@@ -26,16 +17,61 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
 
   final List<String> _mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchMealPlans();
+  }
+
+  // Fetch meal plans from Firestore
+  Future<void> _fetchMealPlans() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('mealplan').where('user', isEqualTo: user?.email).get();
+    setState(() {
+      _mealPlans.clear();
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        _mealPlans.add({
+          'user':user?.email,
+          'date': (data['date'] as Timestamp).toDate(), // Convert Timestamp to DateTime
+          'mealType': data['mealType'],
+          'mealPlan': data['mealPlan'],
+        });
+      }
+      _mealPlans.sort((a, b) {
+        int dateComparison = a['date'].compareTo(b['date']);
+        if (dateComparison != 0) return dateComparison;
+        return _mealTypes.indexOf(a['mealType']).compareTo(_mealTypes.indexOf(b['mealType']));
+      });
+    });
+  }
+
+  // Save meal plan to Firestore
+  Future<void> _saveMealPlan(Map<String, dynamic> mealPlan) async {
+    await FirebaseFirestore.instance.collection('mealplan').add(mealPlan);
+  }
+
+  // Delete meal plan from Firestore
+  Future<void> _deleteMealPlanFromFirestore(int index) async {
+    String date = DateFormat('yyyy-MM-dd').format(_mealPlans[index]['date']);
+    String mealType = _mealPlans[index]['mealType'];
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('mealplan')
+      .where('user', isEqualTo: user?.email)
+      .where('date', isEqualTo: date)
+      .where('mealType', isEqualTo: mealType)
+      .get();
+    for (var doc in querySnapshot.docs) {
+      await FirebaseFirestore.instance.collection('mealplan').doc(doc.id).delete();
+    }
+  }
+
   void _submitMealPlan() {
     if (_selectedDate == null || _selectedMealType == null || _mealController.text.isEmpty) {
-      // Add validation here
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill in all fields')),
       );
       return;
     }
 
-    // Validation: Prevent duplicate meal types for the same date
     bool mealExists = _mealPlans.any((meal) =>
         meal['date'] == _selectedDate && meal['mealType'] == _selectedMealType);
 
@@ -46,21 +82,23 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       return;
     }
 
+    Map<String, dynamic> newMealPlan = {
+      'user':user?.email,
+      'date': _selectedDate!,
+      'mealType': _selectedMealType!,
+      'mealPlan': _mealController.text,
+    };
+
     setState(() {
-      _mealPlans.add({
-        'date': _selectedDate!,
-        'mealType': _selectedMealType!,
-        'mealPlan': _mealController.text,
-      });
+      _mealPlans.add(newMealPlan);
       _mealPlans.sort((a, b) {
-        // Sort by date and then by meal type (Breakfast, Lunch, Dinner)
         int dateComparison = a['date'].compareTo(b['date']);
         if (dateComparison != 0) return dateComparison;
-
         return _mealTypes.indexOf(a['mealType']).compareTo(_mealTypes.indexOf(b['mealType']));
       });
     });
 
+    _saveMealPlan(newMealPlan);
     _mealController.clear();
     _selectedDate = null;
     _selectedMealType = null;
@@ -80,7 +118,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
             child: Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              await _deleteMealPlanFromFirestore(index);
               setState(() {
                 _mealPlans.removeAt(index);
               });
@@ -132,7 +171,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Section 1: Add a new meal plan
             Text(
               'Add a new meal plan',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -182,8 +220,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
               child: Text('Submit'),
             ),
             SizedBox(height: 24),
-
-            // Section 2: List of meal plans
             Text(
               'Your Meal Plans',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -198,7 +234,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                         final mealPlan = _mealPlans[index];
                         return GestureDetector(
                           onTap: () {
-                            // Show detailed view of the meal plan in a card
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -233,13 +268,9 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                             margin: EdgeInsets.symmetric(vertical: 8),
                             child: ListTile(
                               title: Text(
-                                  '${DateFormat('yyyy-MM-dd').format(mealPlan['date'])} (${mealPlan['mealType']})'),
-                              trailing: IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () {
-                                  _deleteMealPlan(index);
-                                },
+                                '${DateFormat('yyyy-MM-dd').format(mealPlan['date'])} (${mealPlan['mealType']})',
                               ),
+                              subtitle: Text(mealPlan['mealPlan']),
                             ),
                           ),
                         );
@@ -252,4 +283,3 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     );
   }
 }
-

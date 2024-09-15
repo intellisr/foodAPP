@@ -58,8 +58,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
           'recipeCulture': recipeCultureController.text,
           'recipeDescription': recipeDescriptionController.text,
           'share':false,
-          'rating':0,
-          'rating_count':0
+          'rating':0.1,
+          'rating_count':0.1
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recipe added successfully!')));
         setState(() {});
