@@ -61,7 +61,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Search Recipes'),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: Colors.redAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -85,7 +85,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
               icon: Icon(Icons.search),
               label: Text('Search'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.greenAccent,
+                backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

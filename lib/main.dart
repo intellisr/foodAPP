@@ -13,6 +13,7 @@ import 'screens/add_recipe_screen.dart';
 import 'screens/recipe_detail_screen.dart';
 import 'screens/personalised_goals_screen.dart';
 import 'screens/video_screen.dart';
+import 'screens/my_profile_screen.dart';
 
 
 void main() async {
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/recipe_search': (context) =>  RecipeSearchScreen(), // Define recipe search route
         '/meal_planner': (context) =>  MealPlannerScreen(), // Define meal planner route
         '/bmi_calculator': (context) =>  BMICalculatorScreen(), // Define BMI calculator route
+        '/my_profile': (context) =>  MyProfileScreen(),
         '/cookbook': (context) =>  CookBookScreen(), // Define cookbook route
         '/store_finder': (context) => StoreFinderScreen(), // Define store finder route
         '/add_recipe': (context) => AddRecipeScreen(), // Define store finder route

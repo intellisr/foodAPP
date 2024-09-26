@@ -34,6 +34,12 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     }
   }
 
+  void removeIngredient(String ingredient) {
+    setState(() {
+      ingredients.remove(ingredient);
+    });
+  }
+
   Future<void> saveRecipe() async {
     if (mealNameController.text.isNotEmpty &&
         selectedMealTime != null &&
@@ -46,7 +52,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         recipeDescriptionController.text.isNotEmpty) {
       try {
         await FirebaseFirestore.instance.collection('recipes').add({
-          'user':user?.email,
+          'user': user?.email,
           'mealName': mealNameController.text,
           'mealTime': selectedMealTime,
           'ingredients': ingredients,
@@ -57,9 +63,9 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
           'culinaryTrends': culinaryTrendsController.text,
           'recipeCulture': recipeCultureController.text,
           'recipeDescription': recipeDescriptionController.text,
-          'share':false,
-          'rating':0.1,
-          'rating_count':0.1
+          'share': true,
+          'rating': 0.1,
+          'rating_count': 0.1
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recipe added successfully!')));
         setState(() {});
@@ -67,7 +73,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add recipe.')));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all fields.'),backgroundColor: Colors.green,));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all fields.'), backgroundColor: Colors.redAccent));
     }
   }
 
@@ -76,7 +82,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add New Recipe'),
-        backgroundColor: Colors.green[700],
+        backgroundColor: Colors.redAccent,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -91,6 +97,10 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               ...ingredients.map((ingredient) => ListTile(
                     title: Text(ingredient, style: TextStyle(color: Colors.green[800])),
                     leading: Icon(Icons.check_circle, color: Colors.green),
+                    trailing: IconButton(
+                      icon: Icon(Icons.remove_circle, color: Colors.red),
+                      onPressed: () => removeIngredient(ingredient),
+                    ),
                   )),
               Row(
                 children: [
@@ -132,7 +142,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                 child: ElevatedButton(
                   onPressed: saveRecipe,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.redAccent,
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),
@@ -152,7 +162,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       maxLines: maxLines,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.green[700]),
+        labelStyle: TextStyle(color: Colors.redAccent),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.green),
@@ -167,7 +177,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       value: selectedValue,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.green[700]),
+        labelStyle: TextStyle(color: Colors.redAccent),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.green),
@@ -180,7 +190,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
           child: Text(item),
         );
       }).toList(),
-      onChanged: onChanged,
+      onChanged:onChanged,
     );
   }
 }

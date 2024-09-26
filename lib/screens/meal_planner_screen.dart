@@ -164,7 +164,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Meal Planner'),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: Colors.redAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

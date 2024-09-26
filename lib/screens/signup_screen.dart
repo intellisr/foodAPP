@@ -5,6 +5,8 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  SignupScreen({super.key});
+
   void signup(BuildContext context) async {
     try {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -17,21 +19,17 @@ class SignupScreen extends StatelessWidget {
       );
       await Future.delayed(Duration(seconds: 2)); // Delay for visibility
       Navigator.pushReplacementNamed(context, '/');
-    }on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("The password provided is too weak.")),
-      );
-        print('The password provided is too weak.');
+          SnackBar(content: Text("The password provided is too weak.")),
+        );
       } else if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("email-already-in-use")),
-      );
-        print('The account already exists for that email.');
+          SnackBar(content: Text("The email is already in use.")),
+        );
       }
     } catch (e) {
-      print(e);
-      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
@@ -41,91 +39,135 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-      title: Text('Sign Up'),
-      centerTitle: true,
-      backgroundColor: Colors.green
+        title: Text('Sign Up'),
+        centerTitle: true,
+        backgroundColor: Colors.redAccent, // Red theme like login page
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Logo and Title
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                color: Colors.green,
-                child: Column(
-                  children: [
-                    Image.network(
-                      'https://i.ibb.co/2txqMcF/logo.png',
-                      width: 50,
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Good Chef',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Logo and Title Section
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
               ),
-
-              SizedBox(height: 20),
-
-              // Email Field
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.network(
+                    'https://firebasestorage.googleapis.com/v0/b/foodapp-c2836.appspot.com/o/GOOD%20CHEF.png?alt=media&token=e4cf71cd-85dc-4772-83c4-6affac094c64',
+                    width: 150, // Keep the logo consistent
+                  ),
+                ],
               ),
+            ),
 
-              SizedBox(height: 16),
+            SizedBox(height: 40),
 
-              // Password Field
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
+            // Email Field
+            Text(
+              'Email Address',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(
+                hintText: 'Enter your email',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: Colors.redAccent),
                 ),
-                obscureText: true,
+                prefixIcon: Icon(Icons.email, color: Colors.redAccent),
+                filled: true,
+                fillColor: Colors.grey[100],
               ),
+            ),
 
-              SizedBox(height: 20),
+            SizedBox(height: 20),
 
-              // Sign Up Button
-              ElevatedButton(
-                onPressed: () => signup(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+            // Password Field
+            Text(
+              'Password',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: passwordController,
+              decoration: InputDecoration(
+                hintText: 'Enter your password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: Colors.redAccent),
                 ),
-                child: const Text(
+                prefixIcon: Icon(Icons.lock, color: Colors.redAccent),
+                filled: true,
+                fillColor: Colors.grey[100],
+              ),
+              obscureText: true,
+            ),
+
+            SizedBox(height: 40),
+
+            // Sign Up Button
+            ElevatedButton(
+              onPressed: () => signup(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                elevation: 5,
+                padding: EdgeInsets.symmetric(vertical: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                shadowColor: Colors.black.withOpacity(0.2),
+              ),
+              child: Center(
+                child: Text(
                   'Sign Up',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
+            ),
 
-              SizedBox(height: 10),
+            SizedBox(height: 20),
 
-              // Link to Login
-              TextButton(
+            // Link to Login
+            Center(
+              child: TextButton(
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, '/');
                 },
-                child: Text('Already have an account? Login'),
+                child: Text(
+                  'Already have an account? Login',
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

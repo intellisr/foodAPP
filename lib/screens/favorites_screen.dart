@@ -255,7 +255,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           valueLabelPadding:
               const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
           valueLabelMargin: const EdgeInsets.only(right: 8),
-          starColor: Colors.green,
+          starColor: Colors.redAccent,
         ),
       ],
     );

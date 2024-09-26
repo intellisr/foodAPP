@@ -48,7 +48,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('BMI Calculator'),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: Colors.redAccent,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -91,7 +91,7 @@ class _BMICalculatorScreenState extends State<BMICalculatorScreen> {
                     ElevatedButton(
                       onPressed: calculateBMI,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.greenAccent,
+                        backgroundColor: Colors.redAccent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

@@ -158,7 +158,7 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Nutrition Goals'),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: Colors.redAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

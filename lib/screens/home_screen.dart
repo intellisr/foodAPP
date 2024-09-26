@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.redAccent,
         actions: [
           // User email display
           if (user != null)
@@ -49,17 +49,16 @@ class HomeScreen extends StatelessWidget {
             // Logo Banner
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(10),
-              color: Colors.green,
+              padding: EdgeInsets.all(5),
+              color: Colors.redAccent,
               child: Column(
                 children: [
-                  Image.network('https://i.ibb.co/2txqMcF/logo.png',
-                      width: 70), // Add your logo here
-                  SizedBox(height: 5),
+                  Image.network('https://firebasestorage.googleapis.com/v0/b/foodapp-c2836.appspot.com/o/GOOD%20CHEF.png?alt=media&token=e4cf71cd-85dc-4772-83c4-6affac094c64',
+                      width: 150), // Add your logo here
                   Text(
-                    'Good Chef',
+                    'HOME',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -99,6 +98,12 @@ class HomeScreen extends StatelessWidget {
                 ),
                 _buildDashboardButton(
                   context,
+                  'My Profile',
+                  Icons.face,
+                  '/my_profile',
+                ),
+                _buildDashboardButton(
+                  context,
                   'Cookbook',
                   Icons.book,
                   '/cookbook',
@@ -115,24 +120,24 @@ class HomeScreen extends StatelessWidget {
                   Icons.fitness_center,
                   '/bmi_calculator',
                 ),
-                _buildDashboardButton(
-                  context,
-                  'Nutri Goals',
-                  Icons.sports_gymnastics,
-                  '/personalised_goals',
-                ),
-                _buildDashboardButton(
-                  context,
-                  'Store Finder',
-                  Icons.store,
-                  '/store_finder',
-                ),
-                _buildDashboardButton(
-                  context,
-                  'Food Class',
-                  Icons.video_call,
-                  '/class',
-                ),
+                // _buildDashboardButton(
+                //   context,
+                //   'Nutri Goals',
+                //   Icons.sports_gymnastics,
+                //   '/personalised_goals',
+                // ),
+                // _buildDashboardButton(
+                //   context,
+                //   'Store Finder',
+                //   Icons.store,
+                //   '/store_finder',
+                // ),
+                // _buildDashboardButton(
+                //   context,
+                //   'Food Class',
+                //   Icons.video_call,
+                //   '/class',
+                // ),
               ],
             ),
           ],
@@ -154,7 +159,7 @@ class HomeScreen extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.orange, Colors.red],
+              colors: [ const Color.fromARGB(141, 255, 136, 0),Colors.red,const Color.fromARGB(141, 255, 136, 0)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
