@@ -47,7 +47,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         selectedRecipeSeason != null &&
         cookingStepsController.text.isNotEmpty &&
         ingredientBenefitsController.text.isNotEmpty &&
-        culinaryTrendsController.text.isNotEmpty &&
+        //culinaryTrendsController.text.isNotEmpty &&
         recipeCultureController.text.isNotEmpty &&
         recipeDescriptionController.text.isNotEmpty) {
       try {

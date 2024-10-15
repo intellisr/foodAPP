@@ -44,6 +44,7 @@ class _CookBookScreenState extends State<CookBookScreen> {
       setState(() {});
     } catch (e) {
       print('Error loading my recipes: $e');
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error loading my recipes: $e')));
     }
   }
 
