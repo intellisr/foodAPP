@@ -246,13 +246,13 @@ class _PersonalGoalScreenState extends State<PersonalGoalScreen> {
                                     },
                                     child: Text('Close'),
                                   ),
-                                  TextButton(
-                                    onPressed: () {
-                                      _deleteGoalPlan(index);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Delete'),
-                                  ),
+                                  // TextButton(
+                                  //   onPressed: () {
+                                  //     _deleteGoalPlan(index);
+                                  //     Navigator.pop(context);
+                                  //   },
+                                  //   child: Text('Delete'),
+                                  // ),
                                 ],
                               ),
                             );

@@ -31,7 +31,8 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         _mealPlans.add({
-          'user':user?.email,
+          'id': doc.id,
+          'user': user?.email,
           'date': (data['date'] as Timestamp).toDate(), // Convert Timestamp to DateTime
           'mealType': data['mealType'],
           'mealPlan': data['mealPlan'],
@@ -50,18 +51,15 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     await FirebaseFirestore.instance.collection('mealplan').add(mealPlan);
   }
 
-  // Delete meal plan from Firestore
   Future<void> _deleteMealPlanFromFirestore(int index) async {
-    String date = DateFormat('yyyy-MM-dd').format(_mealPlans[index]['date']);
-    String mealType = _mealPlans[index]['mealType'];
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('mealplan')
-      .where('user', isEqualTo: user?.email)
-      .where('date', isEqualTo: date)
-      .where('mealType', isEqualTo: mealType)
-      .get();
-    for (var doc in querySnapshot.docs) {
-      await FirebaseFirestore.instance.collection('mealplan').doc(doc.id).delete();
-    }
+    String id = _mealPlans[index]['id'];
+    await FirebaseFirestore.instance.collection('mealplan').doc(id).delete();
+    setState(() {
+      _mealPlans.removeAt(index);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Meal plan deleted successfully!")),
+    );
   }
 
   void _submitMealPlan() {
@@ -83,7 +81,7 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     }
 
     Map<String, dynamic> newMealPlan = {
-      'user':user?.email,
+      'user': user?.email,
       'date': _selectedDate!,
       'mealType': _selectedMealType!,
       'mealPlan': _mealController.text,
@@ -102,34 +100,6 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
     _mealController.clear();
     _selectedDate = null;
     _selectedMealType = null;
-  }
-
-  void _deleteMealPlan(int index) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Delete Meal Plan'),
-        content: Text('Are you sure you want to delete this meal plan?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              await _deleteMealPlanFromFirestore(index);
-              setState(() {
-                _mealPlans.removeAt(index);
-              });
-              Navigator.pop(context);
-            },
-            child: Text('Delete'),
-          ),
-        ],
-      ),
-    );
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -232,45 +202,18 @@ class _MealPlannerScreenState extends State<MealPlannerScreen> {
                       itemCount: _mealPlans.length,
                       itemBuilder: (context, index) {
                         final mealPlan = _mealPlans[index];
-                        return GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text(
-                                    '${DateFormat('yyyy-MM-dd').format(mealPlan['date'])} (${mealPlan['mealType']})'),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('Meal: ${mealPlan['mealPlan']}'),
-                                  ],
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Close'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      _deleteMealPlan(index);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Delete'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          child: Card(
-                            color: _getMealTypeColor(mealPlan['mealType']),
-                            margin: EdgeInsets.symmetric(vertical: 8),
-                            child: ListTile(
-                              title: Text(
-                                '${DateFormat('yyyy-MM-dd').format(mealPlan['date'])} (${mealPlan['mealType']})',
-                              ),
-                              subtitle: Text(mealPlan['mealPlan']),
+                        return Card(
+                          color: _getMealTypeColor(mealPlan['mealType']),
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          child: ListTile(
+                            title: Text(
+                              '${DateFormat('yyyy-MM-dd').format(mealPlan['date'])} (${mealPlan['mealType']})',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(mealPlan['mealPlan']),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: const Color.fromARGB(255, 97, 64, 61)),
+                              onPressed: () => _deleteMealPlanFromFirestore(index),
                             ),
                           ),
                         );

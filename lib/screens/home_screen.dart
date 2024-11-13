@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
             ),
           // Sign-out button
           IconButton(
-            icon: Icon(Icons.logout, semanticLabel: "Sign out"),
+            icon: Icon(Icons.logout, semanticLabel: "Sign out", color: Colors.white,),
             onPressed: () async {
               try {
                 await FirebaseAuth.instance.signOut();
@@ -120,24 +120,30 @@ class HomeScreen extends StatelessWidget {
                   Icons.fitness_center,
                   '/bmi_calculator',
                 ),
-                // _buildDashboardButton(
-                //   context,
-                //   'Nutri Goals',
-                //   Icons.sports_gymnastics,
-                //   '/personalised_goals',
-                // ),
-                // _buildDashboardButton(
-                //   context,
-                //   'Store Finder',
-                //   Icons.store,
-                //   '/store_finder',
-                // ),
-                // _buildDashboardButton(
-                //   context,
-                //   'Food Class',
-                //   Icons.video_call,
-                //   '/class',
-                // ),
+                _buildDashboardButton(
+                  context,
+                  'Nutri Goals',
+                  Icons.sports_gymnastics,
+                  '/personalised_goals',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'Store Finder',
+                  Icons.store,
+                  '/store_finder',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'Shopping List',
+                  Icons.list,
+                  '/shopping_list',
+                ),
+                _buildDashboardButton(
+                  context,
+                  'Food Class',
+                  Icons.video_call,
+                  '/class',
+                ),
               ],
             ),
           ],

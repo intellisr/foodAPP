@@ -123,6 +123,7 @@ Future<void> _searchPlaces(String query) async {
     return Scaffold(
       appBar: AppBar(
         title: Text('Store Finder'),
+        backgroundColor: Colors.redAccent,
         actions: [
           IconButton(
             icon: Icon(Icons.search),

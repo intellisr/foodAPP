@@ -54,11 +54,17 @@ class _VideoScreenState extends State<VideoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add YouTube Video')),
+      appBar: AppBar(title: Text('Food Classes'), backgroundColor: Colors.redAccent,),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Text(
+              'Add YouTube Video',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+
+            SizedBox(height: 16),
             TextField(
               controller: _urlController,
               decoration: InputDecoration(labelText: 'YouTube URL'),
@@ -73,6 +79,17 @@ class _VideoScreenState extends State<VideoScreen> {
               onPressed: _addVideo,
               child: Text('Add Video'),
             ),
+
+            SizedBox(height: 16),
+
+            Text(
+              'Watch Food Classes',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+
+            SizedBox(height: 16),
+
+            
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance.collection('class').snapshots(),

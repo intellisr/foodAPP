@@ -131,6 +131,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+
+                                            // Displaying the image from Firestore URL
+                                            if (recipeData!['recipePicture'] != null) 
+                                              Center(
+                                                child: Image.network(
+                                                  recipeData!['recipePicture'],
+                                                  height: 100,
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              
                                             // Display meal name
                                             Text(
                                                 recipeData['mealName']
@@ -138,13 +151,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold)),
-                                            const SizedBox(height: 8),
+                                            const SizedBox(height: 6),
                                             Text(
                                                 'Meal Time : ${recipeData['mealTime']}'),
-                                            const SizedBox(height: 8),
+                                            const SizedBox(height: 6),
                                             Text(
                                                 'Season : ${recipeData['recipeSeason']}'),
-                                            const SizedBox(height: 8),
+                                            const SizedBox(height: 6),
                                             Text(
                                                 'Time : ${recipeData['readyInTime']}'),
                                             Spacer(),
@@ -221,17 +234,30 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+
+                                    // Displaying the image from Firestore URL
+                                    if (recipeData!['recipePicture'] != null) 
+                                      Center(
+                                        child: Image.network(
+                                          recipeData!['recipePicture'],
+                                          height: 100,
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+
                                     // Display meal name
                                     Text(recipeData['mealName'].toUpperCase(),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     Text(
                                         'Meal Time : ${recipeData['mealTime']}'),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     Text(
                                         'Season : ${recipeData['recipeSeason']}'),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     Text('Time : ${recipeData['readyInTime']}'),
                                     Spacer(),
                                     // Rating bar with 5 stars

@@ -130,18 +130,30 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
                                 padding: const EdgeInsets.all(12.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
+                               children: [                                
+
+                                // Displaying the image from Firestore URL
+                                  if (recipeData!['recipePicture'] != null) 
+                                    Center(
+                                      child: Image.network(
+                                        recipeData!['recipePicture'],
+                                        height: 85,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    
                                     // Display meal name
                                     Text(recipeData['mealName'].toUpperCase(),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     Text(
                                         'Meal Time : ${recipeData['mealTime']}'),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     Text(
                                         'Season : ${recipeData['recipeSeason']}'),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     Text('Time : ${recipeData['readyInTime']}'),
                                     Spacer(),
                                     // Rating bar with 5 stars
