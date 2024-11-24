@@ -66,21 +66,30 @@ class _CookBookScreenState extends State<CookBookScreen> {
           'rating': 0.1,
           'rating_count': 0.1
         });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recipe added successfully!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Recipe added successfully!')));
         clearFields();
         loadMyRecipes(); // Refresh the list after adding
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add recipe.')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Failed to add recipe.')));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill in the name and ingredients.'), backgroundColor: Colors.redAccent));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Please fill in the name and ingredients.'),
+          backgroundColor: Colors.redAccent));
     }
   }
 
   Future<void> updateRecipe() async {
-    if (mealNameController.text.isNotEmpty && ingredients.isNotEmpty && editingRecipeId != null) {
+    if (mealNameController.text.isNotEmpty &&
+        ingredients.isNotEmpty &&
+        editingRecipeId != null) {
       try {
-        await FirebaseFirestore.instance.collection('recipes').doc(editingRecipeId).update({
+        await FirebaseFirestore.instance
+            .collection('recipes')
+            .doc(editingRecipeId)
+            .update({
           'mealName': mealNameController.text,
           'mealTime': selectedMealTime,
           'ingredients': ingredients,
@@ -92,24 +101,47 @@ class _CookBookScreenState extends State<CookBookScreen> {
           'recipeCulture': recipeCultureController.text,
           'recipeDescription': recipeDescriptionController.text,
         });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recipe updated successfully!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Recipe updated successfully!')));
         clearFields();
         loadMyRecipes(); // Refresh the list after updating
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update recipe.')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Failed to update recipe.')));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill in the name and ingredients.'), backgroundColor: Colors.redAccent));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Please fill in the name and ingredients.'),
+          backgroundColor: Colors.redAccent));
     }
   }
 
   Future<void> deleteRecipe(String recipeId) async {
     try {
       await FirebaseFirestore.instance.collection('recipes').doc(recipeId).delete();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recipe deleted successfully!')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Recipe deleted successfully!')));
       loadMyRecipes(); // Refresh the list after deletion
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete recipe.')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to delete recipe.')));
+    }
+  }
+
+  // New function to share a recipe
+  Future<void> shareRecipe(String recipeId) async {
+    try {
+      await FirebaseFirestore.instance.collection('recipes').doc(recipeId).update({
+        'share': true,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Recipe shared successfully!')),
+      );
+      loadMyRecipes(); // Refresh the list after sharing
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to share recipe.')),
+      );
     }
   }
 
@@ -127,26 +159,27 @@ class _CookBookScreenState extends State<CookBookScreen> {
     ingredients.clear();
     isEditing = false; // Reset to "add mode"
     editingRecipeId = null; // Clear editing recipe ID
+    setState(() {});
   }
 
   void loadRecipeToEdit(DocumentSnapshot recipeDoc) {
     var data = recipeDoc.data() as Map<String, dynamic>;
-    
+
     mealNameController.text = data['mealName'];
     readyInTimeController.text = data['readyInTime'] ?? '';
     selectedMealTime = data['mealTime'];
     selectedRecipeSeason = data['recipeSeason'];
     ingredients = List<String>.from(data['ingredients'] ?? []);
-    
+
     cookingStepsController.text = data['cookingSteps'] ?? '';
     ingredientBenefitsController.text = data['ingredientBenefits'] ?? '';
     culinaryTrendsController.text = data['culinaryTrends'] ?? '';
     recipeCultureController.text = data['recipeCulture'] ?? '';
     recipeDescriptionController.text = data['recipeDescription'] ?? '';
-    
+
     isEditing = true; // Switch to editing mode
     editingRecipeId = recipeDoc.id; // Store the recipe ID for editing
-    
+
     setState(() {});
   }
 
@@ -161,40 +194,72 @@ class _CookBookScreenState extends State<CookBookScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Add/Edit Recipe Section
               _buildTextField('Meal Name', mealNameController),
               SizedBox(height: 20),
               _buildIngredientField(),
               SizedBox(height: 20),
-              _buildDropdown('Meal Time', ['Breakfast', 'Lunch', 'Dinner', 'Any Time'], selectedMealTime, (value) {
-                setState(() { selectedMealTime = value; });
+              _buildDropdown('Meal Time', [
+                'Breakfast',
+                'Lunch',
+                'Dinner',
+                'Any Time'
+              ], selectedMealTime, (value) {
+                setState(() {
+                  selectedMealTime = value;
+                });
               }),
               SizedBox(height: 20),
-              _buildTextField('Ready In Time (e.g., 30 minutes)', readyInTimeController),
+              _buildTextField(
+                  'Ready In Time (e.g., 30 minutes)', readyInTimeController),
               SizedBox(height: 20),
-              _buildDropdown('Recipe Season', ['Spring', 'Summer', 'Autumn', 'Winter', 'Sunny', 'Rainy', 'Not Seasonal'], selectedRecipeSeason, (value) {
-                setState(() { selectedRecipeSeason = value; });
+              _buildDropdown('Recipe Season', [
+                'Spring',
+                'Summer',
+                'Autumn',
+                'Winter',
+                'Sunny',
+                'Rainy',
+                'Not Seasonal'
+              ], selectedRecipeSeason, (value) {
+                setState(() {
+                  selectedRecipeSeason = value;
+                });
               }),
               SizedBox(height: 20),
-
+              _buildTextField('Cooking Steps', cookingStepsController),
+              SizedBox(height: 20),
+              _buildTextField(
+                  'Ingredient Benefits', ingredientBenefitsController),
+              SizedBox(height: 20),
+              _buildTextField('Culinary Trends', culinaryTrendsController),
+              SizedBox(height: 20),
+              _buildTextField('Recipe Culture', recipeCultureController),
+              SizedBox(height: 20),
+              _buildTextField(
+                  'Recipe Description', recipeDescriptionController),
+              SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
-                  onPressed: isEditing ? updateRecipe : saveRecipe, // Toggle between add and update
+                  onPressed: isEditing ? updateRecipe : saveRecipe,
+                  // Toggle between add and update
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent,
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                   ),
-                  child: Text(isEditing ? 'Update Recipe' : 'Add Recipe', style: TextStyle(fontSize: 18)),
+                  child: Text(isEditing ? 'Update Recipe' : 'Add Recipe',
+                      style: TextStyle(fontSize: 18)),
                 ),
               ),
-              
               SizedBox(height: 40),
-
               // My Recipes Section
-              Text('My Recipes', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('My Recipes',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               myRecipes.isEmpty
                   ? Center(child: CircularProgressIndicator())
@@ -203,25 +268,112 @@ class _CookBookScreenState extends State<CookBookScreen> {
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: myRecipes.length,
                       itemBuilder: (context, index) {
-                        var recipeData = myRecipes[index].data() as Map<String, dynamic>;
+                        var recipeData =
+                            myRecipes[index].data() as Map<String, dynamic>;
+
+                        // Extract data
+                        String mealName = recipeData['mealName'] ?? '';
+                        String mealTime = recipeData['mealTime'] ?? '';
+                        String readyInTime = recipeData['readyInTime'] ?? '';
+                        String recipeSeason = recipeData['recipeSeason'] ?? '';
+                        List<String> ingredients =
+                            List<String>.from(recipeData['ingredients'] ?? []);
+                        String cookingSteps =
+                            recipeData['cookingSteps'] ?? '';
+                        String ingredientBenefits =
+                            recipeData['ingredientBenefits'] ?? '';
+                        String culinaryTrends =
+                            recipeData['culinaryTrends'] ?? '';
+                        String recipeCulture =
+                            recipeData['recipeCulture'] ?? '';
+                        String recipeDescription =
+                            recipeData['recipeDescription'] ?? '';
+
                         return Card(
                           margin: EdgeInsets.symmetric(vertical: 8),
-                          child: ListTile(
-                            title: Text(recipeData['mealName']),
-                            subtitle:
-                                Text('${recipeData['mealTime']} - ${recipeData['readyInTime']}'),
-                            trailing:
-                                Row(mainAxisSize: MainAxisSize.min, children: [
-                                  IconButton(
-                                    icon: Icon(Icons.edit, color: Colors.blue),
-                                    onPressed: () => loadRecipeToEdit(myRecipes[index]),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () => deleteRecipe(myRecipes[index].id),
-                                  ),
-                                ]),
-                            onTap: () => loadRecipeToEdit(myRecipes[index]),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Recipe Title
+                                Text(
+                                  mealName,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 8),
+                                // Meal Time and Ready In Time
+                                Text('Meal Time: $mealTime'),
+                                Text('Ready In: $readyInTime'),
+                                Text('Season: $recipeSeason'),
+                                SizedBox(height: 8),
+                                // Ingredients
+                                Text('Ingredients:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                ...ingredients
+                                    .map((ingredient) =>
+                                        Text('- $ingredient'))
+                                    .toList(),
+                                SizedBox(height: 8),
+                                // Cooking Steps
+                                Text('Cooking Steps:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text(cookingSteps),
+                                SizedBox(height: 8),
+                                // Ingredient Benefits
+                                Text('Ingredient Benefits:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text(ingredientBenefits),
+                                SizedBox(height: 8),
+                                // Culinary Trends
+                                Text('Culinary Trends:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text(culinaryTrends),
+                                SizedBox(height: 8),
+                                // Recipe Culture
+                                Text('Recipe Culture:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text(recipeCulture),
+                                SizedBox(height: 8),
+                                // Recipe Description
+                                Text('Description:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text(recipeDescription),
+                                SizedBox(height: 16),
+                                // Action Buttons
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.share,
+                                          color: Colors.green),
+                                      onPressed: () => shareRecipe(
+                                          myRecipes[index].id),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.edit,
+                                          color: Colors.blue),
+                                      onPressed: () =>
+                                          loadRecipeToEdit(myRecipes[index]),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete,
+                                          color: Colors.red),
+                                      onPressed: () => deleteRecipe(
+                                          myRecipes[index].id),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -233,13 +385,21 @@ class _CookBookScreenState extends State<CookBookScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  Widget _buildTextField(
+      String label, TextEditingController controller, {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: TextStyle(fontSize: 16)),
         SizedBox(height: 8),
-        TextField(controller: controller),
+        TextField(
+          controller: controller,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter $label',
+          ),
+        ),
       ],
     );
   }
@@ -255,7 +415,9 @@ class _CookBookScreenState extends State<CookBookScreen> {
             Expanded(
               child: TextField(
                 controller: ingredientController,
-                decoration: InputDecoration(hintText: 'Enter ingredient'),
+                decoration: InputDecoration(
+                    hintText: 'Enter ingredient',
+                    border: OutlineInputBorder()),
               ),
             ),
             SizedBox(width: 8),
@@ -290,7 +452,8 @@ class _CookBookScreenState extends State<CookBookScreen> {
     );
   }
 
-  Widget _buildDropdown(String label, List<String> options, String? selectedValue, void Function(String?) onChanged) {
+  Widget _buildDropdown(String label, List<String> options,
+      String? selectedValue, void Function(String?) onChanged) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

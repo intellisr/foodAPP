@@ -29,8 +29,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
       for (var doc in favSnapshot.docs) {
         DocumentSnapshot<Object?>? recipeDoc =
-            await loadRecipeDetails(doc['rec_id']);
-        if (recipeDoc != null) {
+            await loadRecipeDetails(doc['rec_id']);  
+        if (recipeDoc != null && recipeDoc.exists) {
           favoriteRecipes.add(recipeDoc);
         }
       }
@@ -46,6 +46,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       QuerySnapshot myRecipeSnapshot = await FirebaseFirestore.instance
           .collection('recipes')
           .where('user', isEqualTo: user!.email ?? 'No Email')
+          .where('share', isEqualTo: true)
           .get();
 
       myRecipes = myRecipeSnapshot.docs;
@@ -96,7 +97,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     SizedBox(
                       height: 250, // Set height for the slider
                       child: favoriteRecipes.isEmpty
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(child: Text('This is Empty',
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold)))
                           : ListView.builder(
                               scrollDirection:
                                   Axis.horizontal, // Horizontal scrolling

@@ -904,6 +904,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         MaterialPageRoute(
                           builder: (context) => CookingInstructionScreen(
                             ingredients: List<String>.from(recipeData!['ingredients']),
+                            steps: recipeData!['cookingSteps'] ?? ''
                           ),
                         ),
                       );

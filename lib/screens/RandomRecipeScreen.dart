@@ -106,11 +106,9 @@ class _RandomRecipeScreenState extends State<RandomRecipeScreen> {
                               recipeData['mealName'].toUpperCase(),
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 5),
                             Text('Meal Time : ${recipeData['mealTime']}'),
-                            const SizedBox(height: 6),
-                            Text('Season : ${recipeData['recipeSeason']}'),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 5),
                             Text('Time : ${recipeData['readyInTime']}'),
                             Spacer(),
                             Row(
@@ -127,14 +125,6 @@ class _RandomRecipeScreenState extends State<RandomRecipeScreen> {
                                       : Colors.grey,
                                 );
                               }),
-                            ),
-                            const SizedBox(height: 4),
-                            Center(
-                              child: Text(
-                                'Rating: $rating',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
                             ),
                           ],
                         ),
