@@ -1,1 +1,41 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"foodapp-c2836","appId":"1:806341337510:android:6248f6bc3a047fa318ef67","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"foodapp-c2836","appId":"1:806341337510:ios:a4e740aa042a325c18ef67","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"macos":{"default":{"projectId":"foodapp-c2836","appId":"1:806341337510:ios:a4e740aa042a325c18ef67","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"foodapp-c2836","configurations":{"android":"1:806341337510:android:6248f6bc3a047fa318ef67","ios":"1:806341337510:ios:a4e740aa042a325c18ef67","macos":"1:806341337510:ios:a4e740aa042a325c18ef67","web":"1:806341337510:web:9027eaf0ddf9f1d318ef67","windows":"1:806341337510:web:dae13fb1b541312c18ef67"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "foodapp-c2836",
+                    "appId": "1:806341337510:android:6248f6bc3a047fa318ef67",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "ios": {
+                "default": {
+                    "projectId": "foodapp-c2836",
+                    "appId": "1:806341337510:ios:a4e740aa042a325c18ef67",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "ios/Runner/GoogleService-Info.plist"
+                }
+            },
+            "macos": {
+                "default": {
+                    "projectId": "foodapp-c2836",
+                    "appId": "1:806341337510:ios:a4e740aa042a325c18ef67",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "macos/Runner/GoogleService-Info.plist"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "foodapp-c2836",
+                    "configurations": {
+                        "android": "1:806341337510:android:6248f6bc3a047fa318ef67",
+                        "ios": "1:806341337510:ios:a4e740aa042a325c18ef67",
+                        "macos": "1:806341337510:ios:a4e740aa042a325c18ef67",
+                        "web": "1:806341337510:web:9027eaf0ddf9f1d318ef67",
+                        "windows": "1:806341337510:web:dae13fb1b541312c18ef67"
+                    }
+                }
+            }
+        }
+    }
+}

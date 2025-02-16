@@ -313,7 +313,7 @@ class _CookingInstructionScreenState extends State<CookingInstructionScreen> {
             ),
             Divider(),
             Container(
-              height: 100, // Adjust as needed
+              height: 300, // Adjust as needed
               child: ListView.builder(
                 itemCount: widget.ingredients.length,
                 itemBuilder: (context, index) {
@@ -325,34 +325,34 @@ class _CookingInstructionScreenState extends State<CookingInstructionScreen> {
               ),
             ),
             SizedBox(height: 20),
-            Text(
-              'Steps',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            Divider(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: steps.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Icon(
-                      index == _currentStepIndex
-                          ? Icons.radio_button_checked
-                          : Icons.radio_button_unchecked,
-                      color: index == _currentStepIndex ? Colors.blue : Colors.grey,
-                    ),
-                    title: Text(
-                      steps[index],
-                      style: TextStyle(
-                        fontWeight: index == _currentStepIndex
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            // Text(
+            //   'Steps',
+            //   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            // ),
+            // Divider(),
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: steps.length,
+            //     itemBuilder: (context, index) {
+            //       return ListTile(
+            //         leading: Icon(
+            //           index == _currentStepIndex
+            //               ? Icons.radio_button_checked
+            //               : Icons.radio_button_unchecked,
+            //           color: index == _currentStepIndex ? Colors.blue : Colors.grey,
+            //         ),
+            //         title: Text(
+            //           steps[index],
+            //           style: TextStyle(
+            //             fontWeight: index == _currentStepIndex
+            //                 ? FontWeight.bold
+            //                 : FontWeight.normal,
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             SizedBox(height: 20),
             Text(
               'Timer',

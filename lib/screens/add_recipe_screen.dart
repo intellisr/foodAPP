@@ -467,7 +467,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   String? imageUrl; // Store the image URL from Firebase Storage
 
   final List<String> mealTimes = ['Breakfast', 'Lunch', 'Dinner', 'Any Time'];
-  final List<String> recipeSeasons = ['Spring', 'Summer', 'Autumn', 'Winter', 'Sunny', 'Rainy', 'Not Seasonal'];
+  final List<String> recipeSeasons = ['Spring-はる', 'Summer-なつ', 'Autumn-あき', 'Winter-ふゆ', 'Sunny', 'Rainy', 'Not Seasonal'];
 
   void addIngredient() {
     if (ingredientController.text.isNotEmpty) {
